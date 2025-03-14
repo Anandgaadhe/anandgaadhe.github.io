@@ -1,4 +1,4 @@
-// Particle animation for the background
+// Particle animation for the background with programming symbols
 document.addEventListener('DOMContentLoaded', function() {
     const canvas = document.getElementById('particle-canvas');
     const ctx = canvas.getContext('2d');
@@ -16,6 +16,7 @@ document.addEventListener('DOMContentLoaded', function() {
     const particlesArray = [];
     const numberOfParticles = 100;
     const colors = ['#4e9af1', '#2a75e6', '#1756b7'];
+    const symbols = ['{ }', '< >', '# ', '()', '[]', 'py', 'C++', '//'];
     
     // Create particles
     class Particle {
@@ -27,11 +28,24 @@ document.addEventListener('DOMContentLoaded', function() {
             this.speedY = Math.random() * 1 - 0.5;
             this.color = colors[Math.floor(Math.random() * colors.length)];
             this.opacity = Math.random() * 0.5 + 0.2;
+            
+            // 30% chance to be a programming symbol
+            this.isProgrammingSymbol = Math.random() < 0.3;
+            if (this.isProgrammingSymbol) {
+                this.symbol = symbols[Math.floor(Math.random() * symbols.length)];
+                this.fontSize = Math.random() * 12 + 8; // 8-20px font size
+                this.rotation = Math.random() * Math.PI * 2;
+                this.rotationSpeed = (Math.random() - 0.5) * 0.01;
+            }
         }
         
         update() {
             this.x += this.speedX;
             this.y += this.speedY;
+            
+            if (this.isProgrammingSymbol) {
+                this.rotation += this.rotationSpeed;
+            }
             
             if (this.x > canvas.width) this.x = 0;
             if (this.x < 0) this.x = canvas.width;
@@ -40,11 +54,26 @@ document.addEventListener('DOMContentLoaded', function() {
         }
         
         draw() {
-            ctx.fillStyle = this.color;
-            ctx.globalAlpha = this.opacity;
-            ctx.beginPath();
-            ctx.arc(this.x, this.y, this.size, 0, Math.PI * 2);
-            ctx.fill();
+            if (this.isProgrammingSymbol) {
+                // Draw programming symbol
+                ctx.save();
+                ctx.translate(this.x, this.y);
+                ctx.rotate(this.rotation);
+                ctx.font = `${this.fontSize}px Courier New`;
+                ctx.fillStyle = this.color;
+                ctx.globalAlpha = this.opacity;
+                ctx.textAlign = 'center';
+                ctx.textBaseline = 'middle';
+                ctx.fillText(this.symbol, 0, 0);
+                ctx.restore();
+            } else {
+                // Draw regular particle
+                ctx.fillStyle = this.color;
+                ctx.globalAlpha = this.opacity;
+                ctx.beginPath();
+                ctx.arc(this.x, this.y, this.size, 0, Math.PI * 2);
+                ctx.fill();
+            }
         }
     }
     
@@ -90,6 +119,31 @@ document.addEventListener('DOMContentLoaded', function() {
         }
     }
     
+    // Create special programming language particles
+    function addProgrammingLanguages() {
+        const languages = [
+            { text: 'Python', color: '#4B8BBE' },
+            { text: 'C++', color: '#00599C' },
+            { text: 'JavaScript', color: '#F7DF1E' },
+            { text: 'HTML', color: '#E34C26' },
+            { text: 'CSS', color: '#264DE4' }
+        ];
+        
+        // Add language particles
+        for (let i = 0; i < languages.length; i++) {
+            const particle = new Particle();
+            particle.isProgrammingSymbol = true;
+            particle.symbol = languages[i].text;
+            particle.color = languages[i].color;
+            particle.fontSize = 14;
+            particle.opacity = 0.7;
+            particle.speedX = (Math.random() - 0.5) * 0.5; // Slower movement
+            particle.speedY = (Math.random() - 0.5) * 0.5;
+            particlesArray.push(particle);
+        }
+    }
+    
     init();
+    addProgrammingLanguages(); // Add the special programming language particles
     animate();
 });
