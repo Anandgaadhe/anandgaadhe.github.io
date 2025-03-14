@@ -10,56 +10,6 @@
     <link rel="stylesheet" href="static/css/animations.css">
     <link rel="stylesheet" href="static/css/3d-effects.css">
     <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;600;700&display=swap" rel="stylesheet">
-    <style>
-        /* Logo styles */
-        .header {
-            position: fixed;
-            top: 0;
-            left: 0;
-            width: 100%;
-            padding: 15px 30px;
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            z-index: 1000;
-        }
-        .logo {
-            font-family: 'Poppins', sans-serif;
-            font-size: 2.5rem;
-            font-weight: 700;
-            color: #fff;
-            text-decoration: none;
-            display: flex;
-            align-items: center;
-            text-shadow: 0 0 10px rgba(78, 154, 241, 0.8);
-            transition: all 0.3s ease;
-        }
-        .logo-circle {
-            width: 50px;
-            height: 50px;
-            background: linear-gradient(135deg, #4e9af1, #1756b7);
-            border-radius: 50%;
-            display: flex;
-            justify-content: center;
-            align-items: center;
-            margin-right: 10px;
-            box-shadow: 0 0 15px rgba(78, 154, 241, 0.5);
-        }
-        .logo-text {
-            color: white;
-            font-size: 1.8rem;
-        }
-        .logo:hover {
-            transform: scale(1.05);
-        }
-        .logo:hover .logo-circle {
-            box-shadow: 0 0 20px rgba(78, 154, 241, 0.8);
-        }
-        /* Adjust wrapper to account for header */
-        .wrapper {
-            padding-top: 80px;
-        }
-    </style>
 </head>
 <body>
     <!-- Particle Background Canvas for better -->
@@ -67,16 +17,6 @@
     
     <!-- Dark overlay for better text contrast -->
     <div class="dark-overlay"></div>
-
-    <!-- Header with Logo -->
-    <header class="header">
-        <a href="#" class="logo">
-            <div class="logo-circle">
-                <span class="logo-text">A</span>
-            </div>
-            <span>nand</span>
-        </a>
-    </header>
 
     <div class="wrapper">
         <!-- Hero Section -->
