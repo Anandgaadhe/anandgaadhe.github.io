@@ -16,7 +16,7 @@ document.addEventListener('DOMContentLoaded', function() {
     let mouse = {
         x: null,
         y: null,
-        radius: 150
+        radius: 100 // Reduced from 150
     };
     
     window.addEventListener('mousemove', function(event) {
@@ -26,7 +26,7 @@ document.addEventListener('DOMContentLoaded', function() {
     
     // Particle properties with rainbow colors
     const particlesArray = [];
-    const numberOfParticles = 100;
+    const numberOfParticles = 70; // Reduced from 100 for better performance
     
     // Developer themed colors - vibrant coding theme colors
     const colors = [
@@ -64,9 +64,9 @@ document.addEventListener('DOMContentLoaded', function() {
         { text: 'SQL', color: '#e38c00' }
     ];
     
-    // Glow effect for canvas
-    ctx.shadowBlur = 15;
-    ctx.shadowColor = 'rgba(70, 130, 240, 0.5)';
+    // Glow effect for canvas - reduced blur
+    ctx.shadowBlur = 8; // Reduced from 15
+    ctx.shadowColor = 'rgba(70, 130, 240, 0.3)'; // Reduced opacity
     
     // Occasional flash effect
     let flashTimer = 0;
@@ -86,10 +86,10 @@ document.addEventListener('DOMContentLoaded', function() {
         constructor(isSpecial = false) {
             this.x = Math.random() * canvas.width;
             this.y = Math.random() * canvas.height;
-            this.size = Math.random() * 4 + 1;
+            this.size = Math.random() * 2.5 + 0.5; // Reduced from 4+1
             this.baseSize = this.size;
-            this.speedX = Math.random() * 2 - 1;
-            this.speedY = Math.random() * 2 - 1;
+            this.speedX = Math.random() * 1.5 - 0.75; // Reduced from 2-1
+            this.speedY = Math.random() * 1.5 - 0.75;
             this.color = colors[Math.floor(Math.random() * colors.length)];
             this.isRainbow = Math.random() > 0.8; // 20% chance of rainbow
             this.rainbowOffset = Math.random() * 10;
@@ -101,9 +101,9 @@ document.addEventListener('DOMContentLoaded', function() {
             // Chance for a star particle
             this.isStar = Math.random() > 0.9;
             if (this.isStar) {
-                this.starFlareSize = this.size * (Math.random() * 4 + 3);
+                this.starFlareSize = this.size * (Math.random() * 3 + 2); // Reduced from 4+3
                 this.starColor = '#ffffff';
-                this.starOpacity = Math.random() * 0.3 + 0.2;
+                this.starOpacity = Math.random() * 0.25 + 0.15; // Reduced opacity
             }
             
             // Developer symbol or language
@@ -118,15 +118,15 @@ document.addEventListener('DOMContentLoaded', function() {
                     
                     // Make Python and C++ particles larger and extra visible
                     if (this.symbol === 'Python' || this.symbol === 'C++') {
-                        this.fontSize = Math.random() * 10 + 20; // 20-30px
-                        this.opacity = 1.0;
+                        this.fontSize = Math.random() * 6 + 14; // Reduced from 10+20
+                        this.opacity = 0.9; // Slightly reduced
                     } else {
-                        this.fontSize = Math.random() * 5 + 15; // 15-20px
+                        this.fontSize = Math.random() * 3 + 10; // Reduced from 5+15
                     }
                 } else {
                     // Regular programming symbol
                     this.symbol = devSymbols[Math.floor(Math.random() * devSymbols.length)];
-                    this.fontSize = Math.random() * 10 + 10; // 10-20px
+                    this.fontSize = Math.random() * 6 + 8; // Reduced from 10+10
                     this.isLanguage = false;
                 }
                 
@@ -139,8 +139,8 @@ document.addEventListener('DOMContentLoaded', function() {
             
             // For code block shapes
             if (this.shape === 4) {
-                this.width = Math.random() * 30 + 20;
-                this.height = Math.random() * 20 + 10;
+                this.width = Math.random() * 20 + 15; // Reduced from 30+20
+                this.height = Math.random() * 15 + 8; // Reduced from 20+10
                 this.lineCount = Math.floor(Math.random() * 3) + 2;
             }
         }
@@ -210,21 +210,21 @@ document.addEventListener('DOMContentLoaded', function() {
                 // Special rendering for languages (especially Python and C++)
                 if (this.isLanguage) {
                     // Draw background for language labels
-                    const padding = 8;
+                    const padding = 6; // Reduced from 8
                     const textWidth = ctx.measureText(this.symbol).width + padding * 2;
                     const textHeight = this.fontSize + padding;
                     
                     if (this.symbol === 'Python' || this.symbol === 'C++') {
                         // First, draw a glowing background for the language
-                        ctx.fillStyle = this.symbol === 'Python' ? 'rgba(75, 139, 190, 0.3)' : 'rgba(0, 89, 156, 0.3)';
-                        ctx.shadowBlur = 15;
+                        ctx.fillStyle = this.symbol === 'Python' ? 'rgba(75, 139, 190, 0.2)' : 'rgba(0, 89, 156, 0.2)'; // Reduced opacity
+                        ctx.shadowBlur = 8; // Reduced from 15
                         ctx.shadowColor = this.color;
                         ctx.beginPath();
                         ctx.roundRect(-textWidth/2, -textHeight/2, textWidth, textHeight, 5);
                         ctx.fill();
                         
                         // Then draw text with shadow for better visibility
-                        ctx.fillStyle = 'rgba(0, 0, 0, 0.7)';
+                        ctx.fillStyle = 'rgba(0, 0, 0, 0.6)'; // Reduced opacity
                         ctx.font = `bold ${this.fontSize * sizeFactor}px "Courier New", monospace`;
                         ctx.globalAlpha = this.opacity * opacityFactor;
                         ctx.textAlign = 'center';
@@ -233,7 +233,7 @@ document.addEventListener('DOMContentLoaded', function() {
                         
                         // Draw the main text
                         ctx.fillStyle = this.color;
-                        ctx.shadowBlur = 5; 
+                        ctx.shadowBlur = 3; // Reduced from 5
                         ctx.shadowColor = 'white';
                         ctx.fillText(this.symbol, 0, 0);
                     } else {
@@ -243,7 +243,7 @@ document.addEventListener('DOMContentLoaded', function() {
                         ctx.globalAlpha = this.opacity * opacityFactor;
                         ctx.textAlign = 'center';
                         ctx.textBaseline = 'middle';
-                        ctx.shadowBlur = 10;
+                        ctx.shadowBlur = 5; // Reduced from 10
                         ctx.shadowColor = this.color;
                         ctx.fillText(this.symbol, 0, 0);
                     }
@@ -254,7 +254,7 @@ document.addEventListener('DOMContentLoaded', function() {
                     ctx.globalAlpha = this.opacity * opacityFactor;
                     ctx.textAlign = 'center';
                     ctx.textBaseline = 'middle';
-                    ctx.shadowBlur = 8;
+                    ctx.shadowBlur = 4; // Reduced from 8
                     ctx.shadowColor = this.color;
                     ctx.fillText(this.symbol, 0, 0);
                 }
@@ -267,7 +267,7 @@ document.addEventListener('DOMContentLoaded', function() {
                 // Apply color (rainbow or static)
                 ctx.fillStyle = this.color;
                 ctx.globalAlpha = this.opacity * opacityFactor;
-                ctx.shadowBlur = 15;
+                ctx.shadowBlur = 8; // Reduced from 15
                 ctx.shadowColor = this.color;
                 
                 // Star flare effect
@@ -358,7 +358,7 @@ document.addEventListener('DOMContentLoaded', function() {
     
     // Initialize particles
     function init() {
-        // First fill with solid black background
+        // First fill with solid black background - made even darker
         ctx.fillStyle = 'rgb(0, 0, 0)';
         ctx.fillRect(0, 0, canvas.width, canvas.height);
         
@@ -366,25 +366,19 @@ document.addEventListener('DOMContentLoaded', function() {
             particlesArray.push(new Particle());
         }
         
-        // Add special language particles
-        for (let i = 0; i < 20; i++) {
+        // Add special language particles (reduced)
+        for (let i = 0; i < 12; i++) { // Reduced from 20
             particlesArray.push(new Particle(true));
         }
     }
     
     // Animation loop
     function animate() {
-        // Semi-transparent clear for trail effect - darker background
-        ctx.fillStyle = 'rgba(0, 0, 0, 0.15)'; // Increased opacity for darker black
+        // Semi-transparent clear for trail effect - completely dark background
+        ctx.fillStyle = 'rgba(0, 0, 0, 0.25)'; // Increased from 0.15 for darker effect
         ctx.fillRect(0, 0, canvas.width, canvas.height);
         
-        // Occasional flash effect (changed from blue to dark)
-        flashTimer++;
-        if (flashTimer > flashInterval && Math.random() > 0.97) {
-            ctx.fillStyle = 'rgba(20, 20, 30, 0.2)'; // Changed to dark color instead of blue
-            ctx.fillRect(0, 0, canvas.width, canvas.height);
-            flashTimer = 0;
-        }
+        // Flash effect removed for cleaner look
         
         // Update and draw all particles
         for (let i = 0; i < particlesArray.length; i++) {
@@ -398,7 +392,7 @@ document.addEventListener('DOMContentLoaded', function() {
         requestAnimationFrame(animate);
     }
     
-    // Connect particles with lines if they are close
+    // Connect particles with lines if they are close - reduced distance
     function connectParticles() {
         for (let i = 0; i < particlesArray.length; i++) {
             for (let j = i; j < particlesArray.length; j++) {
@@ -406,7 +400,7 @@ document.addEventListener('DOMContentLoaded', function() {
                 const dy = particlesArray[i].y - particlesArray[j].y;
                 const distance = Math.sqrt(dx * dx + dy * dy);
                 
-                if (distance < 120) {
+                if (distance < 100) { // Reduced from 120
                     // Rainbow connections for rainbow particles
                     if (particlesArray[i].isRainbow || particlesArray[j].isRainbow) {
                         ctx.strokeStyle = getRainbowColor(particlesArray[i].rainbowOffset);
@@ -420,8 +414,8 @@ document.addEventListener('DOMContentLoaded', function() {
                         ctx.strokeStyle = gradient;
                     }
                     
-                    ctx.globalAlpha = 0.2 * (1 - distance/120);
-                    ctx.lineWidth = 0.8;
+                    ctx.globalAlpha = 0.15 * (1 - distance/100); // Reduced from 0.2
+                    ctx.lineWidth = 0.5; // Reduced from 0.8
                     ctx.beginPath();
                     ctx.moveTo(particlesArray[i].x, particlesArray[i].y);
                     ctx.lineTo(particlesArray[j].x, particlesArray[j].y);
@@ -429,6 +423,17 @@ document.addEventListener('DOMContentLoaded', function() {
                 }
             }
         }
+    }
+    
+    // Add a media query check for mobile
+    function isMobileDevice() {
+        return (window.innerWidth <= 768);
+    }
+    
+    // Adjust for mobile if needed
+    if (isMobileDevice()) {
+        // Further reduce for mobile
+        mouse.radius = 80;
     }
     
     init();
