@@ -102,17 +102,34 @@ document.addEventListener('DOMContentLoaded', function() {
                 ctx.save();
                 ctx.translate(this.x, this.y);
                 ctx.rotate(this.rotation);
-                ctx.font = `${this.fontSize * sizeFactor}px Courier New`;
-                ctx.fillStyle = this.color;
-                ctx.globalAlpha = this.opacity * opacityFactor;
-                ctx.textAlign = 'center';
-                ctx.textBaseline = 'middle';
-
-                // Draw glow
-                ctx.shadowBlur = 10;
-                ctx.shadowColor = this.color;
                 
-                ctx.fillText(this.symbol, 0, 0);
+                // For Python and C++, use a special font rendering
+                if (this.symbol === 'Python' || this.symbol === 'C++') {
+                    // First, draw text shadow for better contrast against background
+                    ctx.fillStyle = 'rgba(0, 0, 0, 0.7)';
+                    ctx.font = `bold ${this.fontSize * sizeFactor}px Courier New`;
+                    ctx.globalAlpha = this.opacity * opacityFactor;
+                    ctx.textAlign = 'center';
+                    ctx.textBaseline = 'middle';
+                    ctx.fillText(this.symbol, 2, 2); // Shadow offset
+                    
+                    // Then draw the actual text
+                    ctx.fillStyle = this.color;
+                    ctx.shadowBlur = 5; // Reduced blur for clearer text
+                    ctx.shadowColor = 'white'; // White glow looks better for text
+                    ctx.fillText(this.symbol, 0, 0);
+                } else {
+                    // Original drawing for other symbols
+                    ctx.font = `${this.fontSize * sizeFactor}px Courier New`;
+                    ctx.fillStyle = this.color;
+                    ctx.globalAlpha = this.opacity * opacityFactor;
+                    ctx.textAlign = 'center';
+                    ctx.textBaseline = 'middle';
+                    ctx.shadowBlur = 10;
+                    ctx.shadowColor = this.color;
+                    ctx.fillText(this.symbol, 0, 0);
+                }
+                
                 ctx.restore();
             } else {
                 // Draw star flash effect first (if it's a star)
@@ -221,12 +238,29 @@ document.addEventListener('DOMContentLoaded', function() {
             particle.isProgrammingSymbol = true;
             particle.symbol = languages[i].text;
             particle.color = languages[i].color;
-            particle.fontSize = 14;
-            particle.opacity = 0.8; // More visible
-            particle.speedX = (Math.random() - 0.5) * 0.5; // Slower movement
-            particle.speedY = (Math.random() - 0.5) * 0.5;
+            particle.fontSize = 18; // Increased font size from 14 to 18
+            particle.opacity = 0.9; // More opaque
+            particle.speedX = (Math.random() - 0.5) * 0.3; // Even slower movement
+            particle.speedY = (Math.random() - 0.5) * 0.3;
             particle.pulsate = true; // Make them pulsate
+            
+            // Add more copies of Python and C++ to make them more common
             particlesArray.push(particle);
+            
+            // Duplicate Python and C++ particles to make them more common
+            if (languages[i].text === 'Python' || languages[i].text === 'C++') {
+                // Create an even larger version with bold effect
+                const bigParticle = new Particle();
+                bigParticle.isProgrammingSymbol = true;
+                bigParticle.symbol = languages[i].text;
+                bigParticle.color = languages[i].color;
+                bigParticle.fontSize = 24; // Even larger
+                bigParticle.opacity = 1.0; // Fully opaque
+                bigParticle.speedX = (Math.random() - 0.5) * 0.2;
+                bigParticle.speedY = (Math.random() - 0.5) * 0.2;
+                bigParticle.pulsate = true;
+                particlesArray.push(bigParticle);
+            }
         }
     }
     
