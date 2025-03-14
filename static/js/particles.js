@@ -358,6 +358,10 @@ document.addEventListener('DOMContentLoaded', function() {
     
     // Initialize particles
     function init() {
+        // First fill with solid black background
+        ctx.fillStyle = 'rgb(0, 0, 0)';
+        ctx.fillRect(0, 0, canvas.width, canvas.height);
+        
         for (let i = 0; i < numberOfParticles; i++) {
             particlesArray.push(new Particle());
         }
@@ -370,14 +374,14 @@ document.addEventListener('DOMContentLoaded', function() {
     
     // Animation loop
     function animate() {
-        // Semi-transparent clear for trail effect
-        ctx.fillStyle = 'rgba(0, 0, 0, 0.03)';
+        // Semi-transparent clear for trail effect - darker background
+        ctx.fillStyle = 'rgba(0, 0, 0, 0.15)'; // Increased opacity for darker black
         ctx.fillRect(0, 0, canvas.width, canvas.height);
         
-        // Occasional flash effect
+        // Occasional flash effect (changed from blue to dark)
         flashTimer++;
         if (flashTimer > flashInterval && Math.random() > 0.97) {
-            ctx.fillStyle = 'rgba(70, 130, 240, 0.03)';
+            ctx.fillStyle = 'rgba(20, 20, 30, 0.2)'; // Changed to dark color instead of blue
             ctx.fillRect(0, 0, canvas.width, canvas.height);
             flashTimer = 0;
         }
