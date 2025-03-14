@@ -1,4 +1,4 @@
-// Particle animation for the background with programming symbols and bling effect
+// Particle animation for the background with programming symbols, bling effects and mouse interaction
 document.addEventListener('DOMContentLoaded', function() {
     const canvas = document.getElementById('particle-canvas');
     const ctx = canvas.getContext('2d');
@@ -12,20 +12,57 @@ document.addEventListener('DOMContentLoaded', function() {
     window.addEventListener('resize', resizeCanvas);
     resizeCanvas();
     
-    // Particle properties with brighter colors
+    // Mouse interaction
+    let mouse = {
+        x: null,
+        y: null,
+        radius: 150
+    };
+    
+    window.addEventListener('mousemove', function(event) {
+        mouse.x = event.x;
+        mouse.y = event.y;
+    });
+    
+    // Particle properties with rainbow colors
     const particlesArray = [];
-    const numberOfParticles = 120; // More particles
+    const numberOfParticles = 100;
+    
+    // Developer themed colors - vibrant coding theme colors
     const colors = [
-        '#4e9af1', // Blue
-        '#2a75e6', // Darker Blue
-        '#1756b7', // Deep Blue
-        '#64c5eb', // Light Blue
-        '#f7d06b', // Gold
-        '#f08df0', // Pink
-        '#ee82ee', // Violet
-        '#ffffff'  // White (bright!)
+        '#ff3860', // Red
+        '#3273dc', // Blue
+        '#ffdd57', // Yellow
+        '#23d160', // Green
+        '#9c27b0', // Purple
+        '#ff9800', // Orange
+        '#00d1b2', // Teal
+        '#ffffff', // White
+        '#f012be'  // Pink
     ];
-    const symbols = ['{ }', '< >', '# ', '()', '[]', 'py', 'C++', '//', 'JS', 'HTML', '$$'];
+    
+    // Developer symbols and icons
+    const devSymbols = [
+        '{ }', '< >', '# ', '()', '[]', '//', '&&', '||', 
+        '+=', '=>', '===', '!==', '++', '--', '**', 
+        '#!/', 'npm', 'git', 'def', 'let', 'var', 'const',
+        'if', 'for', 'while', 'return', 'import', 'from',
+        'function', 'async', 'await', 'class', 'extends'
+    ];
+    
+    // Programming languages for special particles
+    const languages = [
+        { text: 'Python', color: '#4B8BBE' },
+        { text: 'C++', color: '#00599C' },
+        { text: 'JavaScript', color: '#F7DF1E' },
+        { text: 'HTML', color: '#E34C26' },
+        { text: 'CSS', color: '#264DE4' },
+        { text: 'PHP', color: '#777BB4' },
+        { text: 'Java', color: '#007396' },
+        { text: 'React', color: '#61DAFB' },
+        { text: 'Node.js', color: '#68A063' },
+        { text: 'SQL', color: '#e38c00' }
+    ];
     
     // Glow effect for canvas
     ctx.shadowBlur = 15;
@@ -33,23 +70,35 @@ document.addEventListener('DOMContentLoaded', function() {
     
     // Occasional flash effect
     let flashTimer = 0;
-    const flashInterval = 200; // Lower value = more frequent flashes
+    const flashInterval = 200;
+    
+    // Rainbow color effect
+    function getRainbowColor(offset) {
+        const time = Date.now() * 0.001 + offset;
+        const r = Math.sin(time * 0.3) * 127 + 128;
+        const g = Math.sin(time * 0.3 + 2) * 127 + 128;
+        const b = Math.sin(time * 0.3 + 4) * 127 + 128;
+        return `rgb(${r}, ${g}, ${b})`;
+    }
     
     // Create particles
     class Particle {
-        constructor() {
+        constructor(isSpecial = false) {
             this.x = Math.random() * canvas.width;
             this.y = Math.random() * canvas.height;
-            this.size = Math.random() * 4 + 1; // Larger particles
-            this.speedX = Math.random() * 1.5 - 0.75; // Faster movement
-            this.speedY = Math.random() * 1.5 - 0.75;
+            this.size = Math.random() * 4 + 1;
+            this.baseSize = this.size;
+            this.speedX = Math.random() * 2 - 1;
+            this.speedY = Math.random() * 2 - 1;
             this.color = colors[Math.floor(Math.random() * colors.length)];
-            this.opacity = Math.random() * 0.7 + 0.3; // Higher opacity
-            this.pulsate = Math.random() > 0.7; // Some particles will pulsate
+            this.isRainbow = Math.random() > 0.8; // 20% chance of rainbow
+            this.rainbowOffset = Math.random() * 10;
+            this.opacity = Math.random() * 0.7 + 0.3;
+            this.pulsate = Math.random() > 0.5;
             this.pulseSpeed = 0.02 + Math.random() * 0.03;
             this.pulsePhase = Math.random() * Math.PI * 2;
             
-            // Chance for a star particle (extra bright)
+            // Chance for a star particle
             this.isStar = Math.random() > 0.9;
             if (this.isStar) {
                 this.starFlareSize = this.size * (Math.random() * 4 + 3);
@@ -57,17 +106,65 @@ document.addEventListener('DOMContentLoaded', function() {
                 this.starOpacity = Math.random() * 0.3 + 0.2;
             }
             
-            // 25% chance to be a programming symbol
-            this.isProgrammingSymbol = Math.random() < 0.25;
+            // Developer symbol or language
+            this.isProgrammingSymbol = Math.random() < 0.3 || isSpecial;
             if (this.isProgrammingSymbol) {
-                this.symbol = symbols[Math.floor(Math.random() * symbols.length)];
-                this.fontSize = Math.random() * 12 + 8; // 8-20px font size
+                if (isSpecial) {
+                    // Special language particle
+                    const lang = languages[Math.floor(Math.random() * languages.length)];
+                    this.symbol = lang.text;
+                    this.color = lang.color;
+                    this.isLanguage = true;
+                    
+                    // Make Python and C++ particles larger and extra visible
+                    if (this.symbol === 'Python' || this.symbol === 'C++') {
+                        this.fontSize = Math.random() * 10 + 20; // 20-30px
+                        this.opacity = 1.0;
+                    } else {
+                        this.fontSize = Math.random() * 5 + 15; // 15-20px
+                    }
+                } else {
+                    // Regular programming symbol
+                    this.symbol = devSymbols[Math.floor(Math.random() * devSymbols.length)];
+                    this.fontSize = Math.random() * 10 + 10; // 10-20px
+                    this.isLanguage = false;
+                }
+                
                 this.rotation = Math.random() * Math.PI * 2;
                 this.rotationSpeed = (Math.random() - 0.5) * 0.02;
+            }
+            
+            // Shape variety - some particles have different shapes
+            this.shape = Math.floor(Math.random() * 5); // 0: circle, 1: square, 2: triangle, 3: diamond, 4: code block
+            
+            // For code block shapes
+            if (this.shape === 4) {
+                this.width = Math.random() * 30 + 20;
+                this.height = Math.random() * 20 + 10;
+                this.lineCount = Math.floor(Math.random() * 3) + 2;
             }
         }
         
         update() {
+            // Mouse interaction - particles move away from mouse
+            if (mouse.x !== null && mouse.y !== null) {
+                const dx = this.x - mouse.x;
+                const dy = this.y - mouse.y;
+                const distance = Math.sqrt(dx * dx + dy * dy);
+                
+                if (distance < mouse.radius) {
+                    const angle = Math.atan2(dy, dx);
+                    const force = (mouse.radius - distance) / mouse.radius;
+                    
+                    this.x += Math.cos(angle) * force * 2;
+                    this.y += Math.sin(angle) * force * 2;
+                    
+                    // Highlight particles near mouse
+                    this.size = this.baseSize * (1 + (force * 2));
+                }
+            }
+            
+            // Regular movement
             this.x += this.speedX;
             this.y += this.speedY;
             
@@ -77,10 +174,12 @@ document.addEventListener('DOMContentLoaded', function() {
                 if (this.pulsePhase > Math.PI * 2) this.pulsePhase = 0;
             }
             
+            // Rotate programming symbols
             if (this.isProgrammingSymbol) {
                 this.rotation += this.rotationSpeed;
             }
             
+            // Wrap around edges
             if (this.x > canvas.width) this.x = 0;
             if (this.x < 0) this.x = canvas.width;
             if (this.y > canvas.height) this.y = 0;
@@ -97,46 +196,82 @@ document.addEventListener('DOMContentLoaded', function() {
                 opacityFactor = 0.7 + Math.sin(this.pulsePhase) * 0.3;
             }
             
+            // Update color for rainbow particles
+            if (this.isRainbow && !this.isProgrammingSymbol) {
+                this.color = getRainbowColor(this.rainbowOffset);
+            }
+            
             if (this.isProgrammingSymbol) {
                 // Draw programming symbol with glow
                 ctx.save();
                 ctx.translate(this.x, this.y);
                 ctx.rotate(this.rotation);
                 
-                // For Python and C++, use a special font rendering
-                if (this.symbol === 'Python' || this.symbol === 'C++') {
-                    // First, draw text shadow for better contrast against background
-                    ctx.fillStyle = 'rgba(0, 0, 0, 0.7)';
-                    ctx.font = `bold ${this.fontSize * sizeFactor}px Courier New`;
-                    ctx.globalAlpha = this.opacity * opacityFactor;
-                    ctx.textAlign = 'center';
-                    ctx.textBaseline = 'middle';
-                    ctx.fillText(this.symbol, 2, 2); // Shadow offset
+                // Special rendering for languages (especially Python and C++)
+                if (this.isLanguage) {
+                    // Draw background for language labels
+                    const padding = 8;
+                    const textWidth = ctx.measureText(this.symbol).width + padding * 2;
+                    const textHeight = this.fontSize + padding;
                     
-                    // Then draw the actual text
-                    ctx.fillStyle = this.color;
-                    ctx.shadowBlur = 5; // Reduced blur for clearer text
-                    ctx.shadowColor = 'white'; // White glow looks better for text
-                    ctx.fillText(this.symbol, 0, 0);
+                    if (this.symbol === 'Python' || this.symbol === 'C++') {
+                        // First, draw a glowing background for the language
+                        ctx.fillStyle = this.symbol === 'Python' ? 'rgba(75, 139, 190, 0.3)' : 'rgba(0, 89, 156, 0.3)';
+                        ctx.shadowBlur = 15;
+                        ctx.shadowColor = this.color;
+                        ctx.beginPath();
+                        ctx.roundRect(-textWidth/2, -textHeight/2, textWidth, textHeight, 5);
+                        ctx.fill();
+                        
+                        // Then draw text with shadow for better visibility
+                        ctx.fillStyle = 'rgba(0, 0, 0, 0.7)';
+                        ctx.font = `bold ${this.fontSize * sizeFactor}px "Courier New", monospace`;
+                        ctx.globalAlpha = this.opacity * opacityFactor;
+                        ctx.textAlign = 'center';
+                        ctx.textBaseline = 'middle';
+                        ctx.fillText(this.symbol, 2, 2); // Shadow offset
+                        
+                        // Draw the main text
+                        ctx.fillStyle = this.color;
+                        ctx.shadowBlur = 5; 
+                        ctx.shadowColor = 'white';
+                        ctx.fillText(this.symbol, 0, 0);
+                    } else {
+                        // For other languages
+                        ctx.font = `${this.fontSize * sizeFactor}px "Courier New", monospace`;
+                        ctx.fillStyle = this.color;
+                        ctx.globalAlpha = this.opacity * opacityFactor;
+                        ctx.textAlign = 'center';
+                        ctx.textBaseline = 'middle';
+                        ctx.shadowBlur = 10;
+                        ctx.shadowColor = this.color;
+                        ctx.fillText(this.symbol, 0, 0);
+                    }
                 } else {
-                    // Original drawing for other symbols
-                    ctx.font = `${this.fontSize * sizeFactor}px Courier New`;
+                    // For regular dev symbols
+                    ctx.font = `${this.fontSize * sizeFactor}px "Courier New", monospace`;
                     ctx.fillStyle = this.color;
                     ctx.globalAlpha = this.opacity * opacityFactor;
                     ctx.textAlign = 'center';
                     ctx.textBaseline = 'middle';
-                    ctx.shadowBlur = 10;
+                    ctx.shadowBlur = 8;
                     ctx.shadowColor = this.color;
                     ctx.fillText(this.symbol, 0, 0);
                 }
                 
                 ctx.restore();
             } else {
-                // Draw star flash effect first (if it's a star)
+                // Draw different particle shapes
+                ctx.save();
+                
+                // Apply color (rainbow or static)
+                ctx.fillStyle = this.color;
+                ctx.globalAlpha = this.opacity * opacityFactor;
+                ctx.shadowBlur = 15;
+                ctx.shadowColor = this.color;
+                
+                // Star flare effect
                 if (this.isStar) {
-                    ctx.save();
-                    
-                    // Draw star flare
                     const gradient = ctx.createRadialGradient(
                         this.x, this.y, 0,
                         this.x, this.y, this.starFlareSize
@@ -149,21 +284,73 @@ document.addEventListener('DOMContentLoaded', function() {
                     ctx.beginPath();
                     ctx.arc(this.x, this.y, this.starFlareSize, 0, Math.PI * 2);
                     ctx.fill();
-                    ctx.restore();
                 }
                 
-                // Draw regular particle with glow
-                ctx.save();
+                // Reset for the main shape
                 ctx.fillStyle = this.color;
                 ctx.globalAlpha = this.opacity * opacityFactor;
                 
-                // Add glow
-                ctx.shadowBlur = 15;
-                ctx.shadowColor = this.color;
+                // Draw different shapes
+                switch (this.shape) {
+                    case 0: // Circle
+                        ctx.beginPath();
+                        ctx.arc(this.x, this.y, this.size * sizeFactor, 0, Math.PI * 2);
+                        ctx.fill();
+                        break;
+                        
+                    case 1: // Square
+                        ctx.fillRect(
+                            this.x - (this.size * sizeFactor), 
+                            this.y - (this.size * sizeFactor), 
+                            this.size * 2 * sizeFactor, 
+                            this.size * 2 * sizeFactor
+                        );
+                        break;
+                        
+                    case 2: // Triangle
+                        ctx.beginPath();
+                        ctx.moveTo(this.x, this.y - this.size * 1.5 * sizeFactor);
+                        ctx.lineTo(this.x - this.size * 1.3 * sizeFactor, this.y + this.size * sizeFactor);
+                        ctx.lineTo(this.x + this.size * 1.3 * sizeFactor, this.y + this.size * sizeFactor);
+                        ctx.closePath();
+                        ctx.fill();
+                        break;
+                        
+                    case 3: // Diamond
+                        ctx.beginPath();
+                        ctx.moveTo(this.x, this.y - this.size * 1.5 * sizeFactor);
+                        ctx.lineTo(this.x + this.size * 1.5 * sizeFactor, this.y);
+                        ctx.lineTo(this.x, this.y + this.size * 1.5 * sizeFactor);
+                        ctx.lineTo(this.x - this.size * 1.5 * sizeFactor, this.y);
+                        ctx.closePath();
+                        ctx.fill();
+                        break;
+                        
+                    case 4: // Code block
+                        const width = this.width * sizeFactor;
+                        const height = this.height * sizeFactor;
+                        const x = this.x - width/2;
+                        const y = this.y - height/2;
+                        
+                        // Draw rectangle for code block
+                        ctx.fillStyle = 'rgba(30, 30, 30, 0.8)';
+                        ctx.beginPath();
+                        ctx.roundRect(x, y, width, height, 3);
+                        ctx.fill();
+                        
+                        // Draw code lines
+                        ctx.fillStyle = this.color;
+                        const lineHeight = height / (this.lineCount + 1);
+                        const lineWidth = width * 0.7;
+                        
+                        for (let i = 0; i < this.lineCount; i++) {
+                            const lineY = y + lineHeight * (i + 1);
+                            const lineLength = (Math.random() * 0.5 + 0.3) * lineWidth;
+                            ctx.fillRect(x + width * 0.15, lineY - 1, lineLength, 2);
+                        }
+                        break;
+                }
                 
-                ctx.beginPath();
-                ctx.arc(this.x, this.y, this.size * sizeFactor, 0, Math.PI * 2);
-                ctx.fill();
                 ctx.restore();
             }
         }
@@ -174,11 +361,16 @@ document.addEventListener('DOMContentLoaded', function() {
         for (let i = 0; i < numberOfParticles; i++) {
             particlesArray.push(new Particle());
         }
+        
+        // Add special language particles
+        for (let i = 0; i < 20; i++) {
+            particlesArray.push(new Particle(true));
+        }
     }
     
     // Animation loop
     function animate() {
-        // Use a semi-transparent clear for trail effect
+        // Semi-transparent clear for trail effect
         ctx.fillStyle = 'rgba(0, 0, 0, 0.03)';
         ctx.fillRect(0, 0, canvas.width, canvas.height);
         
@@ -190,6 +382,7 @@ document.addEventListener('DOMContentLoaded', function() {
             flashTimer = 0;
         }
         
+        // Update and draw all particles
         for (let i = 0; i < particlesArray.length; i++) {
             particlesArray[i].update();
             particlesArray[i].draw();
@@ -209,11 +402,23 @@ document.addEventListener('DOMContentLoaded', function() {
                 const dy = particlesArray[i].y - particlesArray[j].y;
                 const distance = Math.sqrt(dx * dx + dy * dy);
                 
-                if (distance < 120) { // Increased connection distance
-                    ctx.beginPath();
-                    ctx.strokeStyle = particlesArray[i].color;
+                if (distance < 120) {
+                    // Rainbow connections for rainbow particles
+                    if (particlesArray[i].isRainbow || particlesArray[j].isRainbow) {
+                        ctx.strokeStyle = getRainbowColor(particlesArray[i].rainbowOffset);
+                    } else {
+                        const gradient = ctx.createLinearGradient(
+                            particlesArray[i].x, particlesArray[i].y,
+                            particlesArray[j].x, particlesArray[j].y
+                        );
+                        gradient.addColorStop(0, particlesArray[i].color);
+                        gradient.addColorStop(1, particlesArray[j].color);
+                        ctx.strokeStyle = gradient;
+                    }
+                    
                     ctx.globalAlpha = 0.2 * (1 - distance/120);
-                    ctx.lineWidth = 0.8; // Slightly thicker lines
+                    ctx.lineWidth = 0.8;
+                    ctx.beginPath();
                     ctx.moveTo(particlesArray[i].x, particlesArray[i].y);
                     ctx.lineTo(particlesArray[j].x, particlesArray[j].y);
                     ctx.stroke();
@@ -222,49 +427,6 @@ document.addEventListener('DOMContentLoaded', function() {
         }
     }
     
-    // Create special programming language particles
-    function addProgrammingLanguages() {
-        const languages = [
-            { text: 'Python', color: '#4B8BBE' },
-            { text: 'C++', color: '#00599C' },
-            { text: 'JavaScript', color: '#F7DF1E' },
-            { text: 'HTML', color: '#E34C26' },
-            { text: 'CSS', color: '#264DE4' }
-        ];
-        
-        // Add language particles
-        for (let i = 0; i < languages.length; i++) {
-            const particle = new Particle();
-            particle.isProgrammingSymbol = true;
-            particle.symbol = languages[i].text;
-            particle.color = languages[i].color;
-            particle.fontSize = 18; // Increased font size from 14 to 18
-            particle.opacity = 0.9; // More opaque
-            particle.speedX = (Math.random() - 0.5) * 0.3; // Even slower movement
-            particle.speedY = (Math.random() - 0.5) * 0.3;
-            particle.pulsate = true; // Make them pulsate
-            
-            // Add more copies of Python and C++ to make them more common
-            particlesArray.push(particle);
-            
-            // Duplicate Python and C++ particles to make them more common
-            if (languages[i].text === 'Python' || languages[i].text === 'C++') {
-                // Create an even larger version with bold effect
-                const bigParticle = new Particle();
-                bigParticle.isProgrammingSymbol = true;
-                bigParticle.symbol = languages[i].text;
-                bigParticle.color = languages[i].color;
-                bigParticle.fontSize = 24; // Even larger
-                bigParticle.opacity = 1.0; // Fully opaque
-                bigParticle.speedX = (Math.random() - 0.5) * 0.2;
-                bigParticle.speedY = (Math.random() - 0.5) * 0.2;
-                bigParticle.pulsate = true;
-                particlesArray.push(bigParticle);
-            }
-        }
-    }
-    
     init();
-    addProgrammingLanguages(); // Add the special programming language particles
     animate();
 });
