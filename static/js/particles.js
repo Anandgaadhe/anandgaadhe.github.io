@@ -372,7 +372,7 @@ document.addEventListener('DOMContentLoaded', function() {
     // Animation loop
     function animate() {
         // Semi-transparent clear for trail effect - completely dark black background
-        ctx.fillStyle = 'rgba(0, 0, 0, 0.4)'; // Increased opacity for faster fade and darker background
+        ctx.fillStyle = 'rgba(0, 0, 0, 0.95)'; // Increased opacity for darker background
         ctx.fillRect(0, 0, canvas.width, canvas.height);
         
         // Update and draw all particles
@@ -409,8 +409,8 @@ document.addEventListener('DOMContentLoaded', function() {
                         ctx.strokeStyle = gradient;
                     }
                     
-                    ctx.globalAlpha = 0.12 * (1 - distance/80); // Further reduced opacity
-                    ctx.lineWidth = 0.4; // Thinner lines
+                    ctx.globalAlpha = 0.08 * (1 - distance/80); // Further reduced opacity for darker effect
+                    ctx.lineWidth = 0.3; // Even thinner lines
                     ctx.beginPath();
                     ctx.moveTo(particlesArray[i].x, particlesArray[i].y);
                     ctx.lineTo(particlesArray[j].x, particlesArray[j].y);
