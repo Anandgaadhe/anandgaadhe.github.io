@@ -364,15 +364,15 @@ document.addEventListener('DOMContentLoaded', function() {
         }
         
         // Add special language particles (reduced)
-        for (let i = 0; i < 8; i++) { // Further reduced from 12
+        for (let i = 0; i < 8; i++) {
             particlesArray.push(new Particle(true));
         }
     }
 
     // Animation loop
     function animate() {
-        // Semi-transparent clear for trail effect - completely dark black background
-        ctx.fillStyle = 'rgba(0, 0, 0, 1)'; // Full black background
+        // Completely black background with no trail effect
+        ctx.fillStyle = 'rgb(0, 0, 0)';
         ctx.fillRect(0, 0, canvas.width, canvas.height);
         
         // Update and draw all particles
@@ -395,7 +395,7 @@ document.addEventListener('DOMContentLoaded', function() {
                 const dy = particlesArray[i].y - particlesArray[j].y;
                 const distance = Math.sqrt(dx * dx + dy * dy);
                 
-                if (distance < 80) { // Further reduced from 100
+                if (distance < 80) {
                     // Rainbow connections for rainbow particles
                     if (particlesArray[i].isRainbow || particlesArray[j].isRainbow) {
                         ctx.strokeStyle = getRainbowColor(particlesArray[i].rainbowOffset);
@@ -409,8 +409,8 @@ document.addEventListener('DOMContentLoaded', function() {
                         ctx.strokeStyle = gradient;
                     }
                     
-                    ctx.globalAlpha = 0.08 * (1 - distance/80); // Further reduced opacity for darker effect
-                    ctx.lineWidth = 0.3; // Even thinner lines
+                    ctx.globalAlpha = 0.05 * (1 - distance/80); // Further reduced opacity for darker effect
+                    ctx.lineWidth = 0.2; // Even thinner lines
                     ctx.beginPath();
                     ctx.moveTo(particlesArray[i].x, particlesArray[i].y);
                     ctx.lineTo(particlesArray[j].x, particlesArray[j].y);
