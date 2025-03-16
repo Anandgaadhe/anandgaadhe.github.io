@@ -19,11 +19,16 @@ document.addEventListener('DOMContentLoaded', function() {
     window.addEventListener('resize', resizeCanvas);
     resizeCanvas();
     
+    // Force canvas visibility for all devices
+    canvas.style.display = 'block';
+    canvas.style.opacity = '1';
+    canvas.style.visibility = 'visible';
+    
     // Mouse interaction
     let mouse = {
         x: null,
         y: null,
-        radius: 100 // Reduced from 150
+        radius: 100 // Default radius
     };
     
     window.addEventListener('mousemove', function(event) {
@@ -424,6 +429,9 @@ document.addEventListener('DOMContentLoaded', function() {
         ctx.fillStyle = 'rgb(0, 0, 0)';
         ctx.fillRect(0, 0, canvas.width, canvas.height);
         
+        // Clear existing particles if any
+        particlesArray.length = 0;
+        
         for (let i = 0; i < numberOfParticles; i++) {
             particlesArray.push(new Particle());
         }
@@ -439,6 +447,43 @@ document.addEventListener('DOMContentLoaded', function() {
         // Add special language particles
         for (let i = 0; i < languageParticleCount; i++) {
             particlesArray.push(new Particle(true));
+        }
+        
+        // Adjust for mobile if needed
+        if (isMobileDevice()) {
+            // Reduced radius for mobile
+            mouse.radius = 70;
+            
+            // Make all language particles more bright on mobile
+            particlesArray.forEach(p => {
+                if (p.isProgrammingSymbol) {
+                    // Increase brightness and opacity for language particles
+                    p.opacity = Math.min(p.opacity * 1.5, 1.0);
+                    p.fontSize *= 0.9; // Slightly larger than before but still mobile-friendly
+                    
+                    if (p.isLanguage) {
+                        // Make language particles extra vibrant
+                        if (p.symbol === 'Python') {
+                            p.color = '#6bffff'; // Brighter blue for Python
+                        } else if (p.symbol === 'C++') {
+                            p.color = '#00a8ff'; // Brighter blue for C++
+                        } else if (p.symbol === 'JavaScript') {
+                            p.color = '#ffff00'; // Bright yellow for JavaScript
+                        } else if (p.symbol === 'HTML') {
+                            p.color = '#ff7b43'; // Brighter orange for HTML
+                        } else if (p.symbol === 'CSS') {
+                            p.color = '#5cadff'; // Brighter blue for CSS
+                        }
+                        
+                        // Increase shadow blur for more glow
+                        p.extraGlow = true;
+                    }
+                } else {
+                    // For non-language particles
+                    p.size *= 0.7;
+                    p.baseSize *= 0.7;
+                }
+            });
         }
     }
 
@@ -495,43 +540,6 @@ document.addEventListener('DOMContentLoaded', function() {
                 }
             }
         }
-    }
-    
-    // Adjust for mobile if needed
-    if (isMobileDevice()) {
-        // Reduced radius for mobile
-        mouse.radius = 70;
-        
-        // Make all language particles more bright on mobile
-        particlesArray.forEach(p => {
-            if (p.isProgrammingSymbol) {
-                // Increase brightness and opacity for language particles
-                p.opacity = Math.min(p.opacity * 1.5, 1.0);
-                p.fontSize *= 0.9; // Slightly larger than before but still mobile-friendly
-                
-                if (p.isLanguage) {
-                    // Make language particles extra vibrant
-                    if (p.symbol === 'Python') {
-                        p.color = '#6bffff'; // Brighter blue for Python
-                    } else if (p.symbol === 'C++') {
-                        p.color = '#00a8ff'; // Brighter blue for C++
-                    } else if (p.symbol === 'JavaScript') {
-                        p.color = '#ffff00'; // Bright yellow for JavaScript
-                    } else if (p.symbol === 'HTML') {
-                        p.color = '#ff7b43'; // Brighter orange for HTML
-                    } else if (p.symbol === 'CSS') {
-                        p.color = '#5cadff'; // Brighter blue for CSS
-                    }
-                    
-                    // Increase shadow blur for more glow
-                    p.extraGlow = true;
-                }
-            } else {
-                // For non-language particles
-                p.size *= 0.7;
-                p.baseSize *= 0.7;
-            }
-        });
     }
     
     init();
