@@ -51,7 +51,7 @@ document.addEventListener('DOMContentLoaded', function() {
     ];
     
     // Programming languages for special particles
-    const languages = [
+            const languages = [
         { text: 'Python', color: '#6ba5e0' }, // Lighter blue
         { text: 'C++', color: '#007acc' }, // Brighter blue
         { text: 'JavaScript', color: '#ffdc4e' }, // Brighter yellow
@@ -120,7 +120,7 @@ document.addEventListener('DOMContentLoaded', function() {
                     } else {
                         this.fontSize = Math.random() * 3 + 8; // Smaller font
                     }
-                } else {
+        } else {
                     // Regular programming symbol
                     this.symbol = devSymbols[Math.floor(Math.random() * devSymbols.length)];
                     this.fontSize = Math.random() * 4 + 6; // Smaller font
@@ -140,9 +140,9 @@ document.addEventListener('DOMContentLoaded', function() {
                 this.height = Math.random() * 10 + 6; // Smaller
                 this.lineCount = Math.floor(Math.random() * 3) + 2;
             }
-        }
-        
-        update() {
+    }
+
+    update() {
             // Mouse interaction - particles move away from mouse
             if (mouse.x !== null && mouse.y !== null) {
                 const dx = this.x - mouse.x;
@@ -167,52 +167,192 @@ document.addEventListener('DOMContentLoaded', function() {
             
             // Update pulsation
             if (this.pulsate) {
-                this.pulsePhase += this.pulseSpeed;
-                if (this.pulsePhase > Math.PI * 2) this.pulsePhase = 0;
-            }
-            
+            this.pulsePhase += this.pulseSpeed;
+            if (this.pulsePhase > Math.PI * 2) this.pulsePhase = 0;
+        }
+
             // Rotate programming symbols
             if (this.isProgrammingSymbol) {
-                this.rotation += this.rotationSpeed;
-            }
-            
+            this.rotation += this.rotationSpeed;
+        }
+
             // Wrap around edges
             if (this.x > canvas.width) this.x = 0;
             if (this.x < 0) this.x = canvas.width;
             if (this.y > canvas.height) this.y = 0;
             if (this.y < 0) this.y = canvas.height;
-        }
-        
-        draw() {
-            ctx.beginPath();
-            ctx.arc(this.x, this.y, this.size, 0, Math.PI * 2);
+    }
+
+    draw() {
+            // Calculate pulsation effect
+            let sizeFactor = 1;
+            let opacityFactor = 1;
             
-            // Check if particle is behind profile section on mobile
-            const profileSection = document.querySelector('.profile-section');
-            if (isMobile && profileSection) {
-                const profileRect = profileSection.getBoundingClientRect();
-                const isBehindProfile = (
-                    this.x >= profileRect.left &&
-                    this.x <= profileRect.right &&
-                    this.y >= profileRect.top &&
-                    this.y <= profileRect.bottom
-                );
-                
-                if (isBehindProfile) {
-                    return; // Skip drawing if behind profile
-                }
+            if (this.pulsate) {
+                sizeFactor = 1 + Math.sin(this.pulsePhase) * 0.3;
+                opacityFactor = 0.7 + Math.sin(this.pulsePhase) * 0.3;
             }
             
-            ctx.fillStyle = this.color;
-            ctx.fill();
+            // Update color for rainbow particles
+            if (this.isRainbow && !this.isProgrammingSymbol) {
+                this.color = getRainbowColor(this.rainbowOffset);
+            }
             
-            // Add glow effect
-            ctx.shadowColor = this.color;
-            ctx.shadowBlur = 6;
-            ctx.shadowColor = 'rgba(255, 255, 255, 0.3)';
+            if (this.isProgrammingSymbol) {
+                // Draw programming symbol with glow
+                ctx.save();
+                ctx.translate(this.x, this.y);
+                ctx.rotate(this.rotation);
+                
+                // Special rendering for languages (especially Python and C++)
+                if (this.isLanguage) {
+                    // Draw background for language labels
+                    const padding = 4; // Reduced padding
+                    const textWidth = ctx.measureText(this.symbol).width + padding * 2;
+                    const textHeight = this.fontSize + padding;
+                    
+                    if (this.symbol === 'Python' || this.symbol === 'C++') {
+                        // First, draw a glowing background for the language
+                        ctx.fillStyle = this.symbol === 'Python' ? 'rgba(75, 139, 190, 0.15)' : 'rgba(0, 89, 156, 0.15)'; // Reduced opacity
+                        ctx.shadowBlur = 5; // Reduced blur
+                        ctx.shadowColor = this.color;
+                        ctx.beginPath();
+                        ctx.roundRect(-textWidth/2, -textHeight/2, textWidth, textHeight, 4);
+                        ctx.fill();
+                        
+                        // Then draw text with shadow for better visibility
+                        ctx.fillStyle = 'rgba(0, 0, 0, 0.5)';
+                        ctx.font = `bold ${this.fontSize * sizeFactor}px "Courier New", monospace`;
+                        ctx.globalAlpha = this.opacity * opacityFactor;
+                        ctx.textAlign = 'center';
+                        ctx.textBaseline = 'middle';
+                        ctx.fillText(this.symbol, 1, 1); // Reduced shadow offset
+                        
+                        // Draw the main text
+                        ctx.fillStyle = this.color;
+                        ctx.shadowBlur = 2; // Minimal blur for sharp text
+                        ctx.shadowColor = 'white';
+                        ctx.fillText(this.symbol, 0, 0);
+                    } else {
+                        // For other languages
+                        ctx.font = `${this.fontSize * sizeFactor}px "Courier New", monospace`;
+                        ctx.fillStyle = this.color;
+                        ctx.globalAlpha = this.opacity * opacityFactor;
+                        ctx.textAlign = 'center';
+                        ctx.textBaseline = 'middle';
+                        ctx.shadowBlur = 3; // Reduced blur
+                        ctx.shadowColor = this.color;
+                        ctx.fillText(this.symbol, 0, 0);
+                    }
+        } else {
+                    // For regular dev symbols
+                    ctx.font = `${this.fontSize * sizeFactor}px "Courier New", monospace`;
+                    ctx.fillStyle = this.color;
+                    ctx.globalAlpha = this.opacity * opacityFactor;
+                    ctx.textAlign = 'center';
+                    ctx.textBaseline = 'middle';
+                    ctx.shadowBlur = 2; // Minimal blur
+                    ctx.shadowColor = this.color;
+                    ctx.fillText(this.symbol, 0, 0);
+                }
+                
+                ctx.restore();
+            } else {
+                // Draw different particle shapes
+                ctx.save();
+                
+                // Apply color (rainbow or static)
+                ctx.fillStyle = this.color;
+                ctx.globalAlpha = this.opacity * opacityFactor;
+                ctx.shadowBlur = 4; // Reduced blur
+                ctx.shadowColor = this.color;
+                
+                // Star flare effect
+                if (this.isStar) {
+                    const gradient = ctx.createRadialGradient(
+                        this.x, this.y, 0,
+                        this.x, this.y, this.starFlareSize
+                    );
+                    gradient.addColorStop(0, 'rgba(255, 255, 255, ' + this.starOpacity + ')');
+                    gradient.addColorStop(1, 'rgba(70, 130, 240, 0)');
+                    
+                    ctx.fillStyle = gradient;
+                    ctx.globalAlpha = this.starOpacity * (0.6 + Math.sin(Date.now() * 0.003) * 0.4); // Brighter
+                    ctx.beginPath();
+                    ctx.arc(this.x, this.y, this.starFlareSize, 0, Math.PI * 2);
+                    ctx.fill();
+                }
+                
+                // Reset for the main shape
+                ctx.fillStyle = this.color;
+                ctx.globalAlpha = this.opacity * opacityFactor;
+                
+                // Draw different shapes
+                switch (this.shape) {
+                    case 0: // Circle
+                        ctx.beginPath();
+                        ctx.arc(this.x, this.y, this.size * sizeFactor, 0, Math.PI * 2);
+                        ctx.fill();
+                        break;
+                        
+                    case 1: // Square
+                        ctx.fillRect(
+                            this.x - (this.size * sizeFactor), 
+                            this.y - (this.size * sizeFactor), 
+                            this.size * 2 * sizeFactor, 
+                            this.size * 2 * sizeFactor
+                        );
+                        break;
+                        
+                    case 2: // Triangle
+                        ctx.beginPath();
+                        ctx.moveTo(this.x, this.y - this.size * 1.5 * sizeFactor);
+                        ctx.lineTo(this.x - this.size * 1.3 * sizeFactor, this.y + this.size * sizeFactor);
+                        ctx.lineTo(this.x + this.size * 1.3 * sizeFactor, this.y + this.size * sizeFactor);
+                        ctx.closePath();
+                        ctx.fill();
+                        break;
+                        
+                    case 3: // Diamond
+                        ctx.beginPath();
+                        ctx.moveTo(this.x, this.y - this.size * 1.5 * sizeFactor);
+                        ctx.lineTo(this.x + this.size * 1.5 * sizeFactor, this.y);
+                        ctx.lineTo(this.x, this.y + this.size * 1.5 * sizeFactor);
+                        ctx.lineTo(this.x - this.size * 1.5 * sizeFactor, this.y);
+                        ctx.closePath();
+                        ctx.fill();
+                        break;
+                        
+                    case 4: // Code block
+                        const width = this.width * sizeFactor;
+                        const height = this.height * sizeFactor;
+                        const x = this.x - width/2;
+                        const y = this.y - height/2;
+                        
+                        // Draw rectangle for code block
+                        ctx.fillStyle = 'rgba(30, 30, 30, 0.8)';
+                        ctx.beginPath();
+                        ctx.roundRect(x, y, width, height, 3);
+                        ctx.fill();
+                        
+                        // Draw code lines
+                        ctx.fillStyle = this.color;
+                        const lineHeight = height / (this.lineCount + 1);
+                        const lineWidth = width * 0.7;
+                        
+                        for (let i = 0; i < this.lineCount; i++) {
+                            const lineY = y + lineHeight * (i + 1);
+                            const lineLength = (Math.random() * 0.5 + 0.3) * lineWidth;
+                            ctx.fillRect(x + width * 0.15, lineY - 1, lineLength, 2);
+                        }
+                        break;
+                }
+                
+                ctx.restore();
+            }
         }
     }
-    
+
     // Initialize particles
     function init() {
         // First fill with solid pitch black background
@@ -228,11 +368,11 @@ document.addEventListener('DOMContentLoaded', function() {
             particlesArray.push(new Particle(true));
         }
     }
-    
+
     // Animation loop
     function animate() {
         // Semi-transparent clear for trail effect - completely dark black background
-        ctx.fillStyle = 'rgba(0, 0, 0, 0.95)'; // Increased opacity for darker background
+        ctx.fillStyle = 'rgba(0, 0, 0, 1)'; // Full black background
         ctx.fillRect(0, 0, canvas.width, canvas.height);
         
         // Update and draw all particles
