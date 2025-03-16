@@ -3,10 +3,17 @@ document.addEventListener('DOMContentLoaded', function() {
     const canvas = document.getElementById('particle-canvas');
     const ctx = canvas.getContext('2d');
     
+    // Force clean rendering for solid background
+    ctx.imageSmoothingEnabled = false;
+    
     // Set canvas size
     function resizeCanvas() {
         canvas.width = window.innerWidth;
         canvas.height = window.innerHeight;
+        
+        // Apply solid black background immediately
+        ctx.fillStyle = '#000000';
+        ctx.fillRect(0, 0, canvas.width, canvas.height);
     }
     
     window.addEventListener('resize', resizeCanvas);
@@ -98,9 +105,9 @@ document.addEventListener('DOMContentLoaded', function() {
         { text: 'SQL', color: '#ffb700' }  // Brighter orange
     ];
     
-    // Glow effect for canvas - reduced blur
-    ctx.shadowBlur = 6; // Reduced for sharper visuals
-    ctx.shadowColor = 'rgba(255, 255, 255, 0.3)'; // Using white for more contrast against black
+    // Glow effect for canvas - removed blur for sharper visuals and black background
+    ctx.shadowBlur = 0; // Completely removed for solid black background
+    ctx.shadowColor = 'rgba(255, 255, 255, 0)'; // Transparent shadow
     
     // Rainbow color effect - made brighter
     function getRainbowColor(offset) {
@@ -437,10 +444,12 @@ document.addEventListener('DOMContentLoaded', function() {
 
     // Animation loop
     function animate() {
-        // Completely black background with no trail effect
-        ctx.fillStyle = 'rgb(0, 0, 0)';
+        // Completely solid black background with no transparency
+        ctx.globalCompositeOperation = 'source-over'; // Default blend mode
+        ctx.globalAlpha = 1.0; // Full opacity for background
+        ctx.fillStyle = '#000000'; // Pure black
         ctx.fillRect(0, 0, canvas.width, canvas.height);
-
+        
         // Update and draw all particles
         for (let i = 0; i < particlesArray.length; i++) {
             particlesArray[i].update();
@@ -455,6 +464,8 @@ document.addEventListener('DOMContentLoaded', function() {
     
     // Connect particles with lines if they are close - reduced distance
     function connectParticles() {
+        // Reset global compositing mode to ensure proper rendering
+        ctx.globalCompositeOperation = 'source-over';
         for (let i = 0; i < particlesArray.length; i++) {
             for (let j = i; j < particlesArray.length; j++) {
                 const dx = particlesArray[i].x - particlesArray[j].x;
