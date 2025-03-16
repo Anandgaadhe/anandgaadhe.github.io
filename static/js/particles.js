@@ -44,6 +44,11 @@ document.addEventListener('DOMContentLoaded', function() {
         return (window.innerWidth <= 768);
     }
     
+    // Significantly reduce particles for mobile
+    if (isMobileDevice()) {
+        numberOfParticles = 30; // Reduced from 100 to 30 for better mobile performance
+    }
+    
     // Handle window resize and make sure particles stay visible on mobile
     window.addEventListener('resize', function() {
         canvas.width = window.innerWidth;
@@ -55,21 +60,6 @@ document.addEventListener('DOMContentLoaded', function() {
             particlesArray[i].y = Math.random() * canvas.height;
         }
     });
-    
-    // Triple the particles for mobile (but not too many to cause performance issues)
-    if (isMobileDevice()) {
-        // Only use 100 particles for mobile to prevent performance issues
-        numberOfParticles = 100;
-        
-        // Ensure canvas is properly sized for mobile
-        canvas.width = window.innerWidth;
-        canvas.height = window.innerHeight;
-        
-        // Force the canvas to be visible
-        canvas.style.display = 'block';
-        canvas.style.opacity = '1';
-        canvas.style.visibility = 'visible';
-    }
     
     // Particle properties with rainbow colors
     const particlesArray = [];
@@ -439,9 +429,9 @@ document.addEventListener('DOMContentLoaded', function() {
         // Add special language particles
         let languageParticleCount = 8; // Default for desktop
         
-        // More language particles for mobile
+        // Fewer language particles for mobile
         if (isMobileDevice()) {
-            languageParticleCount = 24; // Triple the language particles too
+            languageParticleCount = 10; // Reduced from 24 to 10
         }
         
         // Add special language particles
