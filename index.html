@@ -10,6 +10,32 @@
     <link rel="stylesheet" href="static/css/animations.css">
     <link rel="stylesheet" href="static/css/3d-effects.css">
     <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;600;700&display=swap" rel="stylesheet">
+    
+    <!-- Preload styles to eliminate initial flash/blur -->
+    <style>
+        body {
+            background-color: #000000;
+            margin: 0;
+            padding: 0;
+        }
+        
+        #particle-canvas {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            z-index: 1;
+            background-color: #000000;
+        }
+        
+        .dark-overlay {
+            background: rgba(0, 0, 0, 1) !important;
+        }
+    </style>
+    
+    <!-- Moved script to head with defer attribute -->
+    <script src="./static/js/particles.js" defer></script>
 </head>
 <body>
     <!-- Particle Background Canvas for better -->
@@ -267,6 +293,6 @@
         </section>
     </div>
 
-    <script src="./static/js/particles.js"></script>
+    <!-- Script moved to head -->
 </body>
 </html> 
