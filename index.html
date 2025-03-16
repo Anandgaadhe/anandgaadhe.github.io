@@ -204,24 +204,14 @@
                     height: 100%;
                     border-radius: 50%;
                     object-fit: cover;
-                    border: 4px solid #4a94ff;
-                    box-shadow: 0 0 20px rgba(74, 148, 255, 0.3);
+                    border: 2px solid rgba(74, 148, 255, 0.5);
+                    box-shadow: 0 0 15px rgba(0, 0, 0, 0.6);
                     position: relative;
                     z-index: 2;
                 }
                 
                 .profile-shape {
-                    position: absolute;
-                    top: 50%;
-                    left: 50%;
-                    transform: translate(-50%, -50%);
-                    width: 220px;
-                    height: 220px;
-                    background: linear-gradient(45deg, #4a94ff, #ff5277);
-                    border-radius: 50%;
-                    opacity: 0.1;
-                    z-index: 1;
-                    filter: blur(10px);
+                    display: none; /* Hide the shape in mobile view to fix the blue circle issue */
                 }
                 
                 .hero-text {
@@ -245,29 +235,24 @@
                 }
             }
 
-            /* Particle canvas - move to foreground */
-            #particle-canvas {
-                position: fixed;
-                top: 0;
-                left: 0;
-                width: 100%;
-                height: 100%;
-                z-index: 10; /* Higher z-index to bring particles to the foreground */
-                pointer-events: none; /* Allow clicks to pass through to elements below */
-            }
-            
-            /* Content wrapper should be below particles */
-            .wrapper {
-                position: relative;
-                z-index: 5;
-            }
-            
-            /* Make sure text is visible above particles */
-            .hero-text h1, .hero-text p, .section-heading, .about-text p, 
-            .skills-grid, .education-item, .project-card, .contact-info {
-                position: relative;
-                z-index: 15; /* Even higher z-index to ensure content is above particles */
-                text-shadow: 0 0 10px rgba(0, 0, 0, 0.8); /* Add shadow to make text readable */
+            /* Mobile specific fixes */
+            @media (max-width: 768px) {
+                #particle-canvas {
+                    display: block !important;
+                    opacity: 1 !important;
+                    visibility: visible !important;
+                    z-index: 1;
+                }
+                
+                .dark-overlay {
+                    background: rgb(0, 0, 0); /* Fully black on mobile */
+                    z-index: 0;
+                }
+                
+                .wrapper {
+                    position: relative;
+                    z-index: 2;
+                }
             }
         </style>
 

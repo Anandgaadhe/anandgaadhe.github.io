@@ -24,9 +24,43 @@ document.addEventListener('DOMContentLoaded', function() {
         mouse.y = event.y;
     });
     
+    // Set number of particles - default is for desktop
+    let numberOfParticles = 50;
+    
+    // Add a media query check for mobile
+    function isMobileDevice() {
+        return (window.innerWidth <= 768);
+    }
+    
+    // Handle window resize and make sure particles stay visible on mobile
+    window.addEventListener('resize', function() {
+        canvas.width = window.innerWidth;
+        canvas.height = window.innerHeight;
+        
+        // Reset particle positions when window resizes
+        for (let i = 0; i < particlesArray.length; i++) {
+            particlesArray[i].x = Math.random() * canvas.width;
+            particlesArray[i].y = Math.random() * canvas.height;
+        }
+    });
+    
+    // Triple the particles for mobile (but not too many to cause performance issues)
+    if (isMobileDevice()) {
+        // Only use 100 particles for mobile to prevent performance issues
+        numberOfParticles = 100;
+        
+        // Ensure canvas is properly sized for mobile
+        canvas.width = window.innerWidth;
+        canvas.height = window.innerHeight;
+        
+        // Force the canvas to be visible
+        canvas.style.display = 'block';
+        canvas.style.opacity = '1';
+        canvas.style.visibility = 'visible';
+    }
+    
     // Particle properties with rainbow colors
     const particlesArray = [];
-    const numberOfParticles = 50; // Reduced for better performance and less crowded visuals
     
     // Developer themed colors - lighter and more vibrant colors
     const colors = [
@@ -64,17 +98,17 @@ document.addEventListener('DOMContentLoaded', function() {
         { text: 'SQL', color: '#ffb700' }  // Brighter orange
     ];
     
-    // Glow effect for canvas - increased blur
-    ctx.shadowBlur = 10; // Increased for more glow
-    ctx.shadowColor = 'rgba(255, 255, 255, 0.5)'; // Increased opacity for stronger glow
+    // Glow effect for canvas - reduced blur
+    ctx.shadowBlur = 6; // Reduced for sharper visuals
+    ctx.shadowColor = 'rgba(255, 255, 255, 0.3)'; // Using white for more contrast against black
     
     // Rainbow color effect - made brighter
     function getRainbowColor(offset) {
         const time = Date.now() * 0.001 + offset;
-        // Increase the range to make colors even brighter (160 -> 200 instead of 127 -> 128)
-        const r = Math.sin(time * 0.3) * 127 + 200;
-        const g = Math.sin(time * 0.3 + 2) * 127 + 200;
-        const b = Math.sin(time * 0.3 + 4) * 127 + 200;
+        // Increase the range to make colors brighter (160 -> 200 instead of 127 -> 128)
+        const r = Math.sin(time * 0.3) * 127 + 160;
+        const g = Math.sin(time * 0.3 + 2) * 127 + 160;
+        const b = Math.sin(time * 0.3 + 4) * 127 + 160;
         return `rgb(${r}, ${g}, ${b})`;
     }
     
@@ -140,9 +174,9 @@ document.addEventListener('DOMContentLoaded', function() {
                 this.height = Math.random() * 10 + 6; // Smaller
                 this.lineCount = Math.floor(Math.random() * 3) + 2;
             }
-        }
+    }
 
-        update() {
+    update() {
             // Mouse interaction - particles move away from mouse
             if (mouse.x !== null && mouse.y !== null) {
                 const dx = this.x - mouse.x;
@@ -181,9 +215,9 @@ document.addEventListener('DOMContentLoaded', function() {
             if (this.x < 0) this.x = canvas.width;
             if (this.y > canvas.height) this.y = 0;
             if (this.y < 0) this.y = canvas.height;
-        }
+    }
 
-        draw() {
+    draw() {
             // Calculate pulsation effect
             let sizeFactor = 1;
             let opacityFactor = 1;
@@ -219,7 +253,7 @@ document.addEventListener('DOMContentLoaded', function() {
                         if (isMobileDevice() && this.extraGlow) {
                             ctx.shadowBlur = 12; // Increased glow
                             ctx.shadowColor = this.color;
-                        } else {
+        } else {
                             ctx.shadowBlur = 5; // Regular glow
                             ctx.shadowColor = this.color;
                         }
@@ -243,7 +277,7 @@ document.addEventListener('DOMContentLoaded', function() {
                         if (isMobileDevice() && this.extraGlow) {
                             ctx.shadowBlur = 8; // Higher glow for mobile
                             ctx.shadowColor = 'white';
-                        } else {
+            } else {
                             ctx.shadowBlur = 2; // Minimal blur for sharp text
                             ctx.shadowColor = 'white';
                         }
@@ -317,13 +351,6 @@ document.addEventListener('DOMContentLoaded', function() {
                         ctx.beginPath();
                         ctx.arc(this.x, this.y, this.size * sizeFactor, 0, Math.PI * 2);
                         ctx.fill();
-                        
-                        // Add extra glow for circles
-                        ctx.shadowBlur = 8;
-                        ctx.shadowColor = this.color;
-                        ctx.strokeStyle = this.color;
-                        ctx.lineWidth = 1;
-                        ctx.stroke();
                         break;
                         
                     case 1: // Square
@@ -394,8 +421,16 @@ document.addEventListener('DOMContentLoaded', function() {
             particlesArray.push(new Particle());
         }
         
-        // Add special language particles (reduced)
-        for (let i = 0; i < 8; i++) {
+        // Add special language particles
+        let languageParticleCount = 8; // Default for desktop
+        
+        // More language particles for mobile
+        if (isMobileDevice()) {
+            languageParticleCount = 24; // Triple the language particles too
+        }
+        
+        // Add special language particles
+        for (let i = 0; i < languageParticleCount; i++) {
             particlesArray.push(new Particle(true));
         }
     }
@@ -449,11 +484,6 @@ document.addEventListener('DOMContentLoaded', function() {
                 }
             }
         }
-    }
-    
-    // Add a media query check for mobile
-    function isMobileDevice() {
-        return (window.innerWidth <= 768);
     }
     
     // Adjust for mobile if needed
