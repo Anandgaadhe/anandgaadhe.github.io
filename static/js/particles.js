@@ -64,17 +64,17 @@ document.addEventListener('DOMContentLoaded', function() {
         { text: 'SQL', color: '#ffb700' }  // Brighter orange
     ];
     
-    // Glow effect for canvas - reduced blur
-    ctx.shadowBlur = 6; // Reduced for sharper visuals
-    ctx.shadowColor = 'rgba(255, 255, 255, 0.3)'; // Using white for more contrast against black
+    // Glow effect for canvas - increased blur
+    ctx.shadowBlur = 10; // Increased for more glow
+    ctx.shadowColor = 'rgba(255, 255, 255, 0.5)'; // Increased opacity for stronger glow
     
     // Rainbow color effect - made brighter
     function getRainbowColor(offset) {
         const time = Date.now() * 0.001 + offset;
-        // Increase the range to make colors brighter (160 -> 200 instead of 127 -> 128)
-        const r = Math.sin(time * 0.3) * 127 + 160;
-        const g = Math.sin(time * 0.3 + 2) * 127 + 160;
-        const b = Math.sin(time * 0.3 + 4) * 127 + 160;
+        // Increase the range to make colors even brighter (160 -> 200 instead of 127 -> 128)
+        const r = Math.sin(time * 0.3) * 127 + 200;
+        const g = Math.sin(time * 0.3 + 2) * 127 + 200;
+        const b = Math.sin(time * 0.3 + 4) * 127 + 200;
         return `rgb(${r}, ${g}, ${b})`;
     }
     
@@ -317,6 +317,13 @@ document.addEventListener('DOMContentLoaded', function() {
                         ctx.beginPath();
                         ctx.arc(this.x, this.y, this.size * sizeFactor, 0, Math.PI * 2);
                         ctx.fill();
+                        
+                        // Add extra glow for circles
+                        ctx.shadowBlur = 8;
+                        ctx.shadowColor = this.color;
+                        ctx.strokeStyle = this.color;
+                        ctx.lineWidth = 1;
+                        ctx.stroke();
                         break;
                         
                     case 1: // Square

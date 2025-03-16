@@ -244,6 +244,31 @@
                     font-size: 1rem;
                 }
             }
+
+            /* Particle canvas - move to foreground */
+            #particle-canvas {
+                position: fixed;
+                top: 0;
+                left: 0;
+                width: 100%;
+                height: 100%;
+                z-index: 10; /* Higher z-index to bring particles to the foreground */
+                pointer-events: none; /* Allow clicks to pass through to elements below */
+            }
+            
+            /* Content wrapper should be below particles */
+            .wrapper {
+                position: relative;
+                z-index: 5;
+            }
+            
+            /* Make sure text is visible above particles */
+            .hero-text h1, .hero-text p, .section-heading, .about-text p, 
+            .skills-grid, .education-item, .project-card, .contact-info {
+                position: relative;
+                z-index: 15; /* Even higher z-index to ensure content is above particles */
+                text-shadow: 0 0 10px rgba(0, 0, 0, 0.8); /* Add shadow to make text readable */
+            }
         </style>
 
         <!-- Contact Section -->
