@@ -140,9 +140,9 @@ document.addEventListener('DOMContentLoaded', function() {
                 this.height = Math.random() * 10 + 6; // Smaller
                 this.lineCount = Math.floor(Math.random() * 3) + 2;
             }
-    }
+        }
 
-    update() {
+        update() {
             // Mouse interaction - particles move away from mouse
             if (mouse.x !== null && mouse.y !== null) {
                 const dx = this.x - mouse.x;
@@ -181,9 +181,9 @@ document.addEventListener('DOMContentLoaded', function() {
             if (this.x < 0) this.x = canvas.width;
             if (this.y > canvas.height) this.y = 0;
             if (this.y < 0) this.y = canvas.height;
-    }
+        }
 
-    draw() {
+        draw() {
             // Calculate pulsation effect
             let sizeFactor = 1;
             let opacityFactor = 1;
@@ -213,9 +213,17 @@ document.addEventListener('DOMContentLoaded', function() {
                     
                     if (this.symbol === 'Python' || this.symbol === 'C++') {
                         // First, draw a glowing background for the language
-                        ctx.fillStyle = this.symbol === 'Python' ? 'rgba(75, 139, 190, 0.15)' : 'rgba(0, 89, 156, 0.15)'; // Reduced opacity
-                        ctx.shadowBlur = 5; // Reduced blur
-                        ctx.shadowColor = this.color;
+                        ctx.fillStyle = this.symbol === 'Python' ? 'rgba(107, 255, 255, 0.25)' : 'rgba(0, 168, 255, 0.25)'; // Brighter glow
+                        
+                        // Add extra glow for mobile devices
+                        if (isMobileDevice() && this.extraGlow) {
+                            ctx.shadowBlur = 12; // Increased glow
+                            ctx.shadowColor = this.color;
+                        } else {
+                            ctx.shadowBlur = 5; // Regular glow
+                            ctx.shadowColor = this.color;
+                        }
+                        
                         ctx.beginPath();
                         ctx.roundRect(-textWidth/2, -textHeight/2, textWidth, textHeight, 4);
                         ctx.fill();
@@ -230,8 +238,16 @@ document.addEventListener('DOMContentLoaded', function() {
                         
                         // Draw the main text
                         ctx.fillStyle = this.color;
-                        ctx.shadowBlur = 2; // Minimal blur for sharp text
-                        ctx.shadowColor = 'white';
+                        
+                        // Extra bright text for mobile
+                        if (isMobileDevice() && this.extraGlow) {
+                            ctx.shadowBlur = 8; // Higher glow for mobile
+                            ctx.shadowColor = 'white';
+                        } else {
+                            ctx.shadowBlur = 2; // Minimal blur for sharp text
+                            ctx.shadowColor = 'white';
+                        }
+                        
                         ctx.fillText(this.symbol, 0, 0);
                     } else {
                         // For other languages
@@ -240,11 +256,19 @@ document.addEventListener('DOMContentLoaded', function() {
                         ctx.globalAlpha = this.opacity * opacityFactor;
                         ctx.textAlign = 'center';
                         ctx.textBaseline = 'middle';
-                        ctx.shadowBlur = 3; // Reduced blur
-                        ctx.shadowColor = this.color;
+                        
+                        // Extra bright for mobile
+                        if (isMobileDevice() && this.extraGlow) {
+                            ctx.shadowBlur = 7; // Higher glow for mobile
+                            ctx.shadowColor = this.color;
+                        } else {
+                            ctx.shadowBlur = 3; // Regular glow
+                            ctx.shadowColor = this.color;
+                        }
+                        
                         ctx.fillText(this.symbol, 0, 0);
                     }
-        } else {
+                } else {
                     // For regular dev symbols
                     ctx.font = `${this.fontSize * sizeFactor}px "Courier New", monospace`;
                     ctx.fillStyle = this.color;
@@ -427,15 +451,37 @@ document.addEventListener('DOMContentLoaded', function() {
     
     // Adjust for mobile if needed
     if (isMobileDevice()) {
-        // Further reduce for mobile
+        // Reduced radius for mobile
         mouse.radius = 70;
-        // Even smaller particles on mobile
+        
+        // Make all language particles more bright on mobile
         particlesArray.forEach(p => {
-            if (!p.isProgrammingSymbol) {
+            if (p.isProgrammingSymbol) {
+                // Increase brightness and opacity for language particles
+                p.opacity = Math.min(p.opacity * 1.5, 1.0);
+                p.fontSize *= 0.9; // Slightly larger than before but still mobile-friendly
+                
+                if (p.isLanguage) {
+                    // Make language particles extra vibrant
+                    if (p.symbol === 'Python') {
+                        p.color = '#6bffff'; // Brighter blue for Python
+                    } else if (p.symbol === 'C++') {
+                        p.color = '#00a8ff'; // Brighter blue for C++
+                    } else if (p.symbol === 'JavaScript') {
+                        p.color = '#ffff00'; // Bright yellow for JavaScript
+                    } else if (p.symbol === 'HTML') {
+                        p.color = '#ff7b43'; // Brighter orange for HTML
+                    } else if (p.symbol === 'CSS') {
+                        p.color = '#5cadff'; // Brighter blue for CSS
+                    }
+                    
+                    // Increase shadow blur for more glow
+                    p.extraGlow = true;
+                }
+            } else {
+                // For non-language particles
                 p.size *= 0.7;
                 p.baseSize *= 0.7;
-            } else {
-                p.fontSize *= 0.8;
             }
         });
     }
