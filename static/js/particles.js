@@ -374,7 +374,7 @@ document.addEventListener('DOMContentLoaded', function() {
         // Completely black background with no trail effect
         ctx.fillStyle = 'rgb(0, 0, 0)';
         ctx.fillRect(0, 0, canvas.width, canvas.height);
-        
+
         // Update and draw all particles
         for (let i = 0; i < particlesArray.length; i++) {
             particlesArray[i].update();
