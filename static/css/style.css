@@ -42,7 +42,7 @@ body::before {
         linear-gradient(-45deg, rgba(44, 62, 80, 0.05) 25%, transparent 25%),
         linear-gradient(45deg, transparent 75%, rgba(44, 62, 80, 0.05) 75%),
         linear-gradient(-45deg, transparent 75%, rgba(44, 62, 80, 0.05) 75%);
-    background-size: 20px 20px;
+    background-size: 1000px 2000px;
     z-index: -2;
     pointer-events: none;
 }
@@ -110,7 +110,7 @@ body::before {
     align-items: center;
     justify-content: center;
     position: relative;
-    perspective: 1000px;
+    perspective: 900px;
 }
 
 .hero-content {
@@ -120,13 +120,14 @@ body::before {
 }
 
 .hero-image {
-    width: 200px;
-    height: 200px;
+    width: 180px;
+    height: 180px;
+    justify-content: center;
     margin: 0 auto 30px;
     overflow: hidden;
-    border-radius: 50%;
+    border-radius: 60%;
     transform: translateZ(50px);
-    box-shadow: 0 10px 30px rgba(0,0,0,0.2);
+    box-shadow: none; /* Removed shadow to fix visibility issue */
 }
 
 .hero-image img {
@@ -680,7 +681,7 @@ body::before {
     }
 
     .floating-shapes {
-        display: none; 
+        display: none; /* Hide the shape in mobile view to fix the blue circle issue */
     }
 
     #particle-canvas {
