@@ -195,8 +195,9 @@
                 .hero-image::before {
                     content: "";
                     position: absolute;
-                    width: 150px;
-                    height: 150px;
+                    width: 140px;
+                    height: 140px;
+                    justify-content: center;
                     border-radius: 50%;
                     background-color: rgba(0, 0, 0, 0.5);
                     z-index: -1;
@@ -205,11 +206,11 @@
                     transform: translate(-50%, -50%);
                 }
                 .hero-image img {
-                    width: 140px;
-                    height: 140px;
+                    width: 150px;
+                    height: 150px;
                     object-fit: cover;
                     border-radius: 50%;
-                    border: 2px solid rgba(255, 255, 255, 0.3);
+                    border: 2px solid rgba(16, 2, 2, 0.3);
                     box-shadow: 0 5px 15px rgba(0, 0, 0, 0.3);
                     transition: transform 0.3s ease;
                     position: relative;
@@ -237,25 +238,26 @@
                 }
                 
                 .profile-container {
-                    width: 200px;
-                    height: 200px;
+                    width: 150px;
+                    height: 150px;
                     margin: 0 auto 2rem;
                     position: relative;
                 }
                 
                 .profile-image {
-                    width: 100%;
-                    height: 100%;
+                    width: 150px; /* Adjusted width */
+                    height: 150px; /* Adjusted height */
                     border-radius: 50%;
                     object-fit: cover;
-                    border: 2px solid rgba(74, 148, 255, 0.5);
+                    border: 2px solid rgba(9, 1, 1, 0.24);
                     box-shadow: 0 0 15px rgba(0, 0, 0, 0.6);
                     position: relative;
-                    z-index: 2;
+                    z-index: 5; /* Increased z-index */
+                    background-color: rgba(0, 0, 0, 0.8); /* Added background color */
                 }
                 
                 .profile-shape {
-                    display: none; /* Hide the shape in mobile view to fix the blue circle issue */
+                    display: circle; /* Hide the shape in mobile view to fix the blue circle issue */
                 }
                 
                 .hero-text {
@@ -307,10 +309,9 @@
                 <a href="mailto:anandgaadhe368@gmail.com" class="contact-button">Email Me</a>
                 <a href="https://linkedin.com" class="contact-button">LinkedIn</a>
                 <a href="https://github.com/Anandgaadhe" class="contact-button">GitHub</a>
-            </div>
         </section>
     </div>
 
     <!-- Script moved to head -->
 </body>
-</html> 
+</html>

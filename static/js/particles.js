@@ -484,7 +484,7 @@ document.addEventListener('DOMContentLoaded', function() {
         ctx.globalAlpha = 1.0; // Full opacity for background
         ctx.fillStyle = '#000000'; // Pure black
         ctx.fillRect(0, 0, canvas.width, canvas.height);
-        
+
         // Update and draw all particles
         for (let i = 0; i < particlesArray.length; i++) {
             particlesArray[i].update();
