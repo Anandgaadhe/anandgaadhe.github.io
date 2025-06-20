@@ -132,7 +132,7 @@
             <div class="education-timeline">
                 <div class="education-card">
                     <div class="education-year">2025</div>
-                    <h3>M.C.A Running</h3>
+                    <h3>M.S.C Running</h3>
                 </div>
                 <div class="education-card">
                     <div class="education-year">2020</div>
@@ -154,13 +154,34 @@
             <h2 class="section-title">My Projects</h2>
             <div class="projects-grid">
                 <div class="project-card" style="position: relative; overflow: hidden; max-width: 320px; margin: 0 auto; box-shadow: 0 10px 20px rgba(0,0,0,0.2); border-radius: 12px;">
-                    <a href="https://oreecart-9vry.onrender.com" target="_blank" style="display: block; width: 100%; height: 100%; position: absolute; top: 0; left: 0; z-index: 10;"></a>
+                    <a href="https://oreecart-9vry.onrender.com/" target="_blank" style="display: block; width: 100%; height: 100%; position: absolute; top: 0; left: 0; z-index: 10;"></a>
                     <div class="project-content" style="position: relative; z-index: 5; padding: 15px;">
                         <img src="static/ecom.webp" alt="OREECART Project" style="width: 100%; height: auto; object-fit: cover; border-radius: 8px; margin-bottom: 15px; max-height: 160px;">
                         <h3 style="font-size: 1.2rem; margin-bottom: 5px;">OREECART</h3>
                     </div>
                 </div>
+                <div class="project-card" style="position: relative; overflow: hidden; max-width: 320px; margin: 0 auto; box-shadow: 0 10px 20px rgba(0,0,0,0.2); border-radius: 12px;">
+                    <a href="https://oree-text-to-speech.onrender.com/" target="_blank" style="display: block; width: 100%; height: 100%; position: absolute; top: 0; left: 0; z-index: 10;"></a>
+                    <div class="project-content" style="position: relative; z-index: 5; padding: 15px;">
+                        <img src="static/ecom.webp" alt="OREE Text-to-Speech Project" style="width: 100%; height: auto; object-fit: cover; border-radius: 8px; margin-bottom: 15px; max-height: 160px;">
+                        <h3 style="font-size: 1.2rem; margin-bottom: 5px;">OREE Text-to-Speech</h3>
+                    </div>
+                </div>
             </div>
+            <ul class="projects-list">
+                <li>
+                    <a href="https://oreecart-n3we.onrender.com/" target="_blank" class="project-link">
+                        <img src="static/ecom.webp" alt="OREECART Project" class="project-thumb">
+                        <span class="project-title">OREECART</span>
+                    </a>
+                </li>
+                <li>
+                    <a href="https://oree-text-to-speech.onrender.com/" target="_blank" class="project-link">
+                        <img src="static/ecom.webp" alt="OREE Text-to-Speech Project" class="project-thumb">
+                        <span class="project-title">OREE Text-to-Speech</span>
+                    </a>
+                </li>
+            </ul>
         </section>
 
         <style>
@@ -298,6 +319,61 @@
                 .wrapper {
                     position: relative;
                     z-index: 2;
+                }
+            }
+
+            /* Projects section mobile styles */
+            @media (max-width: 768px) {
+                .projects-grid, .project-card {
+                    display: none;
+                }
+                .projects-list {
+                    display: block;
+                    padding: 0;
+                    margin: 0 auto;
+                    max-width: 350px;
+                }
+                .projects-list li {
+                    list-style: none;
+                    margin-bottom: 18px;
+                    background: #181818;
+                    border-radius: 10px;
+                    box-shadow: 0 4px 12px rgba(0,0,0,0.18);
+                    overflow: hidden;
+                    transition: box-shadow 0.2s;
+                }
+                .projects-list li:active, .projects-list li:focus-within {
+                    box-shadow: 0 0 0 2px #00ffd0;
+                }
+                .project-link {
+                    display: flex;
+                    align-items: center;
+                    text-decoration: none;
+                    color: #fff;
+                    padding: 10px 12px;
+                    gap: 14px;
+                }
+                .project-thumb {
+                    width: 54px;
+                    height: 54px;
+                    object-fit: cover;
+                    border-radius: 7px;
+                    background: #222;
+                    flex-shrink: 0;
+                }
+                .project-title {
+                    font-size: 1.08rem;
+                    font-weight: 600;
+                    letter-spacing: 0.01em;
+                }
+            }
+
+            @media (min-width: 769px) {
+                .projects-list {
+                    display: none;
+                }
+                .projects-grid, .project-card {
+                    display: flex;
                 }
             }
         </style>
